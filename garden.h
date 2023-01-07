@@ -37,26 +37,54 @@ class Garden {
           }
         }
 
+        bool veggie() const {
+          switch (value_) {
+            case Carrot:
+            case Tomato:
+            case Eggplant:
+            case Potato:
+            case Brocolli:
+            case Onion:
+            case Pepper:
+            case Beet:
+              return true;
+            default:
+              return false;
+          }
+        }
+
       private:
         Value value_;
 
     };
 
-    Garden(unsigned int seed);
+    Garden(unsigned int seed, int level = 1);
+    void generate(int level);
 
     Tile at(int x, int y) const;
     bool solved() const;
     void draw(Graphics& graphics, int x, int y) const;
+    int level() const { return level_; }
+    static int max_level() { return kMaxLevel; }
 
     bool move(Direction dir);
 
   private:
 
+    struct LevelSpec {
+      int width, height;
+      int veggies;
+      int stones;
+    };
+
     static constexpr int kSpriteSize = 16;
+    static constexpr int kMaxLevel = 11;
+    static const std::array<LevelSpec, kMaxLevel> kLevelSpecs;
 
     SpriteMap sprites_;
     std::array<Tile, 64> tiles_;
     int width_, height_;
+    int level_;
     std::mt19937 rng_;
 
     int size() const { return width_ * height_; }

@@ -17,6 +17,10 @@ bool GameScreen::update(const Input& input, Audio&, unsigned int) {
 
   solved_ = garden_.solved();
 
+  if (solved_ && input.key_pressed(Input::Button::Start)) {
+    garden_.generate(garden_.level() + 1);
+  }
+
   return true;
 }
 
