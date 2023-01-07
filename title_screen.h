@@ -1,5 +1,6 @@
 #pragma once
 
+#include "backdrop.h"
 #include "screen.h"
 #include "text.h"
 
@@ -15,6 +16,6 @@ class TitleScreen : public Screen {
 
   private:
 
+    Backdrop backdrop_;
     Text text_;
-
 };

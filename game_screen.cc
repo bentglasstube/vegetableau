@@ -46,7 +46,5 @@ void GameScreen::draw(Graphics& graphics) const {
   const std::string time = std::to_string(m) + ":" + (s < 10 ? "0" : "") + std::to_string(s);
 
   text_.draw(graphics, "Level " + std::to_string(garden_.level()), 152, 60, Text::Alignment::Center);
-  text_.draw(graphics, time, graphics.width() - 4, 208, Text::Alignment::Right);
+  text_.draw(graphics, time, graphics.width() - 4, 210, Text::Alignment::Right);
 }
-
-
