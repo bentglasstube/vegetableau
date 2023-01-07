@@ -7,8 +7,7 @@ NAME=ld52
 GAMDEPS=audio backdrop game graphics input screen spritemap text
 
 SOURCES=$(wildcard *.cc) $(patsubst %,gam/%.cc,$(GAMDEPS))
-RENDERS=$(patsubts resources/%.ase,content/%.png,$(wildcard resources/*.ase))
-CONTENT=$(wildcard content/*) $(RENDERS)
+CONTENT=$(wildcard content/*)
 ICONS=icon.png
 BUILDDIR=$(CROSS)output
 OBJECTS=$(patsubst %.cc,$(BUILDDIR)/%.o,$(SOURCES))
@@ -42,12 +41,11 @@ ifeq ($(UNAME), Darwin)
 	CPPFLAGS+=-mmacosx-version-min=10.9
 endif
 
-.PHONY: all echo clean distclean run package wasm web renders
+.PHONY: all echo clean distclean run package wasm web
 
 all: $(EXECUTABLE)
 
 echo:
-	@echo "Renders: $(RENDERS)"
 	@echo "Content: $(CONTENT)"
 	@echo "Sources: $(SOURCES)"
 	@echo "Uname: $(UNAME)"
@@ -56,11 +54,6 @@ echo:
 
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
-
-renders: $(RENDERS)
-
-content/%.png: resources/%.ase
-	asperite --batch $< --save-as $@
 
 $(EXECUTABLE): $(OBJECTS) $(EXTRA) $(CONTENT)
 	$(CXX) $(CPPFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(EXTRA) $(LDLIBS)
