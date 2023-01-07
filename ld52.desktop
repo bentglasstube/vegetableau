@@ -1,0 +1,9 @@
+[Desktop Entry]
+
+Type=Application
+Version=1.0
+Name=ld52
+Terminal=false
+Icon=icon
+Exec=ld52
+Categories=Game;
