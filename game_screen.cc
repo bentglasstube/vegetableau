@@ -1,6 +1,13 @@
 #include "game_screen.h"
 
-GameScreen::GameScreen() : solved_(false) {}
+#ifndef NDEBUG
+#define SEED 8675309
+#else
+#include "util.h"
+#define SEED Util::random_seed()
+#endif
+
+GameScreen::GameScreen() : garden_(SEED), solved_(false) {}
 
 bool GameScreen::update(const Input& input, Audio&, unsigned int) {
   if (input.key_pressed(Input::Button::Left))  garden_.move(Garden::Direction::Left);

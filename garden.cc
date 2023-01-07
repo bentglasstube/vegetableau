@@ -4,13 +4,51 @@
 #include <deque>
 #include <set>
 
-Garden::Garden() :
+Garden::Garden(unsigned int seed) :
   sprites_("veggies.png", 4, kSpriteSize, kSpriteSize),
-  width_(3), height_(3)
+  width_(8), height_(8),
+  rng_(seed)
 {
-  tiles_ = { Tile::Empty, Tile::Carrot, Tile::Tomato,
-             Tile::Tomato, Tile::Carrot, Tile::Potato,
-             Tile::Potato, Tile::Tomato, Tile::Potato };
+  std::vector<int> fill(size());
+  for (int i = 0; i < size(); ++i) {
+    fill[i] = i;
+  }
+  std::shuffle(fill.begin(), fill.end(), rng_);
+  fill.pop_back();
+
+  std::vector<Tile> veggies(8);
+  for (int i = 0; i < 8; ++i) {
+    veggies[i] = i + 1;
+  }
+  std::shuffle(veggies.begin(), veggies.end(), rng_);
+
+  while (!fill.empty()) {
+    const int i = fill.back();
+    const int ix = i % width_, iy = i / width_;
+    fill.pop_back();
+
+    std::vector<Tile> neighbors;
+    if (at(ix - 1, iy) != Tile::Empty) neighbors.push_back(at(ix - 1, iy));
+    if (at(ix + 1, iy) != Tile::Empty) neighbors.push_back(at(ix + 1, iy));
+    if (at(ix, iy - 1) != Tile::Empty) neighbors.push_back(at(ix, iy - 1));
+    if (at(ix, iy + 1) != Tile::Empty) neighbors.push_back(at(ix, iy + 1));
+
+    if (neighbors.empty()) {
+      // Nothing nearby, place a new veggie
+      if (veggies.empty()) {
+        // Nothing to place, come back later
+        fill.insert(fill.begin(), i);
+      } else {
+        tiles_[i] = veggies.back();
+        veggies.pop_back();
+      }
+    } else {
+      std::shuffle(neighbors.begin(), neighbors.end(), rng_);
+      tiles_[i] = neighbors.front();
+    }
+  }
+
+  shuffle(4096);
 }
 
 Garden::Tile Garden::at(int x, int y) const {
@@ -69,7 +107,7 @@ void Garden::draw(Graphics& graphics, int x, int y) const {
       const int tx = x + kSpriteSize * ix;
       const int ty = y + kSpriteSize * iy;
       if (tile != Tile::Empty) {
-        sprites_.draw(graphics, static_cast<int>(tile) - 1, tx, ty);
+        sprites_.draw(graphics, tile - 1, tx, ty);
       }
     }
   }
@@ -96,7 +134,7 @@ bool Garden::move(Direction dir) {
       break;
 
     case Direction::Up:
-      if (empty > size() - width_) return false;
+      if (empty >= size() - width_) return false;
       std::swap(tiles_[empty + width_], tiles_[empty]);
       break;
 
@@ -107,4 +145,23 @@ bool Garden::move(Direction dir) {
   }
 
   return true;
+}
+
+void Garden::shuffle(size_t count) {
+  std::uniform_int_distribution<int> dist(0, 3);
+  while (count > 0) {
+    if (move(static_cast<Direction>(dist(rng_)))) --count;
+  }
+}
+
+bool Garden::swap(int a, int b) {
+  if (tiles_[a].empty() && tiles_[b].moveable()) {
+    std::swap(tiles_[a], tiles_[b]);
+    return true;
+  } else if (tiles_[a].moveable() && tiles_[b].empty()) {
+    std::swap(tiles_[a], tiles_[b]);
+    return true;
+  } else {
+    return false;
+  }
 }
