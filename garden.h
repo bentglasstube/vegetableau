@@ -64,7 +64,11 @@ class Garden {
     Tile at(int x, int y) const;
     bool solved() const;
     void draw(Graphics& graphics, int x, int y) const;
+
     int level() const { return level_; }
+    int width() const { return width_; }
+    int height() const { return height_; }
+
     static int max_level() { return kMaxLevel; }
 
     bool move(Direction dir);

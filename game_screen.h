@@ -1,6 +1,9 @@
 #pragma once
 
+#include "backdrop.h"
 #include "screen.h"
+#include "sprite.h"
+#include "text.h"
 
 #include "garden.h"
 
@@ -17,6 +20,10 @@ class GameScreen : public Screen {
 
   private:
 
+    Backdrop backdrop_;
     Garden garden_;
+    Sprite dirt_;
+    Text text_;
     bool solved_;
+    int timer_;
 };

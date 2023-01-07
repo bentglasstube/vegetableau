@@ -4,7 +4,7 @@ ifeq ($(UNAME), Windows)
 endif
 
 NAME=ld52
-GAMDEPS=audio game graphics input screen text
+GAMDEPS=audio backdrop game graphics input screen spritemap text
 
 SOURCES=$(wildcard *.cc) $(patsubst %,gam/%.cc,$(GAMDEPS))
 RENDERS=$(patsubts resources/%.ase,content/%.png,$(wildcard resources/*.ase))
