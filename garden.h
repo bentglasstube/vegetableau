@@ -90,7 +90,7 @@ class Garden {
     };
 
     static constexpr int kSpriteSize = 16;
-    static constexpr int kMaxLevel = 11;
+    static constexpr int kMaxLevel = 15;
     static constexpr int kSlideTime = 100;
     static const std::array<LevelSpec, kMaxLevel> kLevelSpecs;
 
