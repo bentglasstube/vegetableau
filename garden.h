@@ -63,6 +63,7 @@ class Garden {
 
     Tile at(int x, int y) const;
     bool solved() const;
+    void update(unsigned int elapsed);
     void draw(Graphics& graphics, int x, int y) const;
 
     int level() const { return level_; }
@@ -71,7 +72,7 @@ class Garden {
 
     static int max_level() { return kMaxLevel; }
 
-    bool move(Direction dir);
+    bool move(Direction dir, bool animate = true);
 
   private:
 
@@ -81,17 +82,27 @@ class Garden {
       int stones;
     };
 
+    struct SlidingVeg {
+      SlidingVeg(int start, int end, Tile veg) : start(start), end(end), timer(0), veg(veg) {}
+      int start, end;
+      int timer;
+      Tile veg;
+    };
+
     static constexpr int kSpriteSize = 16;
     static constexpr int kMaxLevel = 11;
+    static constexpr int kSlideTime = 100;
     static const std::array<LevelSpec, kMaxLevel> kLevelSpecs;
 
     SpriteMap sprites_;
+    std::mt19937 rng_;
     std::array<Tile, 64> tiles_;
     int width_, height_;
     int level_;
-    std::mt19937 rng_;
+
+    std::vector<SlidingVeg> sliders_;
 
     int size() const { return width_ * height_; }
     void shuffle(size_t count = 256);
-    bool swap(int a, int b);
+    bool swap(int a, int b, bool animate);
 };

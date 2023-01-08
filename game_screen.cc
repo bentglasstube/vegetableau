@@ -28,6 +28,7 @@ bool GameScreen::update(const Input& input, Audio&, unsigned int elapsed) {
   }
 
   timer_ += elapsed;
+  garden_.update(elapsed);
 
   return true;
 }

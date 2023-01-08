@@ -135,20 +135,52 @@ bool Garden::solved() const {
   return true;
 }
 
-void Garden::draw(Graphics& graphics, int x, int y) const {
-  for (int iy = 0; iy < height_; ++iy) {
-    for (int ix = 0; ix < width_; ++ix) {
-      const auto tile = at(ix, iy);
-      const int tx = x + kSpriteSize * ix;
-      const int ty = y + kSpriteSize * iy;
-      if (tile != Tile::Empty) {
-        sprites_.draw(graphics, tile - 1, tx, ty);
-      }
+void Garden::update(unsigned int elapsed) {
+  for (auto it = sliders_.begin(); it != sliders_.end(); ) {
+    it->timer += elapsed;
+    if (it->timer >= kSlideTime) {
+      it = sliders_.erase(it);
+    } else {
+      ++it;
     }
   }
 }
 
-bool Garden::move(Direction dir) {
+void Garden::draw(Graphics& graphics, int x, int y) const {
+  std::set<int> skip;
+
+  for (auto const& s : sliders_) {
+
+    const int x1 = (s.start % width_) * kSpriteSize;
+    const int y1 = (s.start / width_) * kSpriteSize;
+    const int x2 = (s.end % width_) * kSpriteSize;
+    const int y2 = (s.end / width_) * kSpriteSize;
+    const float a = s.timer / (float)kSlideTime;
+
+    const int sx = x1 + a * (x2 - x1);
+    const int sy = y1 + a * (y2 - y1);
+
+    sprites_.draw(graphics, s.veg - 1, x + sx, y + sy);
+    skip.insert(s.end);
+  }
+
+  for (int iy = 0; iy < height_; ++iy) {
+    for (int ix = 0; ix < width_; ++ix) {
+      if (skip.find(iy * width_ + ix) == skip.end()) {
+        const auto tile = at(ix, iy);
+        const int tx = x + kSpriteSize * ix;
+        const int ty = y + kSpriteSize * iy;
+        if (tile != Tile::Empty) {
+          sprites_.draw(graphics, tile - 1, tx, ty);
+        }
+      }
+    }
+  }
+
+
+}
+
+bool Garden::move(Direction dir, bool animate) {
   int empty = 0;
   for (int i = 0; i < width_ * height_; ++i) {
     if (tiles_[i] == Tile::Empty) {
@@ -160,19 +192,19 @@ bool Garden::move(Direction dir) {
   switch (dir) {
     case Direction::Left:
       if (empty % width_ == width_ - 1) return false;
-      return swap(empty, empty + 1);
+      return swap(empty, empty + 1, animate);
 
     case Direction::Right:
       if (empty % width_ == 0) return false;
-      return swap(empty, empty - 1);
+      return swap(empty, empty - 1, animate);
 
     case Direction::Up:
       if (empty >= size() - width_) return false;
-      return swap(empty, empty + width_);
+      return swap(empty, empty + width_, animate);
 
     case Direction::Down:
       if (empty < width_) return false;
-      return swap(empty, empty - width_);
+      return swap(empty, empty - width_, animate);
   }
 
   return false;
@@ -181,15 +213,23 @@ bool Garden::move(Direction dir) {
 void Garden::shuffle(size_t count) {
   std::uniform_int_distribution<int> dist(0, 3);
   while (count > 0) {
-    if (move(static_cast<Direction>(dist(rng_)))) --count;
+    if (move(static_cast<Direction>(dist(rng_)), false)) --count;
   }
 }
 
-bool Garden::swap(int a, int b) {
+bool Garden::swap(int a, int b, bool animate) {
   if (tiles_[a].empty() && tiles_[b].moveable()) {
+    if (animate) {
+      std::cerr << "Making slider from " << b << " to " << a << std::endl;
+      sliders_.emplace_back(b, a, tiles_[b]);
+    }
     std::swap(tiles_[a], tiles_[b]);
     return true;
   } else if (tiles_[a].moveable() && tiles_[b].empty()) {
+    if (animate) {
+      std::cerr << "Making slider from " << a << " to " << b << std::endl;
+      sliders_.emplace_back(a, b, tiles_[a]);
+    }
     std::swap(tiles_[a], tiles_[b]);
     return true;
   } else {
