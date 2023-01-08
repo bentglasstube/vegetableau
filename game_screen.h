@@ -20,10 +20,15 @@ class GameScreen : public Screen {
 
   private:
 
+    enum class State { Playing, Paused, Solved };
+
     Backdrop backdrop_;
     Garden garden_;
     Sprite dirt_;
     Text text_;
+    State state_;
     bool solved_;
     int timer_;
+
+    void next_level();
 };

@@ -132,7 +132,8 @@ bool Garden::solved() const {
     }
   }
 
-  return true;
+  // Everything is solved but wait for animations to end
+  return sliders_.empty();
 }
 
 void Garden::update(unsigned int elapsed) {

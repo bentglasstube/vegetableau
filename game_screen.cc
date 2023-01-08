@@ -12,23 +12,31 @@ GameScreen::GameScreen() :
   garden_(SEED, 1),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
-  solved_(false)
+  state_(State::Playing),
+  timer_(0)
 {}
 
 bool GameScreen::update(const Input& input, Audio&, unsigned int elapsed) {
-  if (input.key_pressed(Input::Button::Left))  garden_.move(Garden::Direction::Left);
-  if (input.key_pressed(Input::Button::Right)) garden_.move(Garden::Direction::Right);
-  if (input.key_pressed(Input::Button::Up))    garden_.move(Garden::Direction::Up);
-  if (input.key_pressed(Input::Button::Down))  garden_.move(Garden::Direction::Down);
+  if (state_ == State::Playing) {
+    if (input.key_pressed(Input::Button::Left))  garden_.move(Garden::Direction::Left);
+    if (input.key_pressed(Input::Button::Right)) garden_.move(Garden::Direction::Right);
+    if (input.key_pressed(Input::Button::Up))    garden_.move(Garden::Direction::Up);
+    if (input.key_pressed(Input::Button::Down))  garden_.move(Garden::Direction::Down);
 
-  solved_ = garden_.solved();
+    if (input.key_pressed(Input::Button::Start)) state_ = State::Paused;
 
-  if (solved_ && input.key_pressed(Input::Button::Start)) {
-    garden_.generate(garden_.level() + 1);
+    timer_ += elapsed;
+    garden_.update(elapsed);
+
+    if (garden_.solved()) state_ = State::Solved;
+
+  } else if (state_ == State::Paused) {
+    if (input.key_pressed(Input::Button::Start)) state_ = State::Playing;
+  } else if (state_ == State::Solved) {
+    if (input.key_pressed(Input::Button::Start)) next_level();
+    if (input.key_pressed(Input::Button::A)) next_level();
+    if (input.key_pressed(Input::Button::B)) next_level();
   }
-
-  timer_ += elapsed;
-  garden_.update(elapsed);
 
   return true;
 }
@@ -39,8 +47,17 @@ void GameScreen::draw(Graphics& graphics) const {
 
   backdrop_.draw(graphics);
   dirt_.draw(graphics, 84, 76);
-  if (solved_) graphics.draw_rect({87, 79}, {216, 208}, 0xd8ff00ff, true);
-  garden_.draw(graphics, dx, dy);
+
+  if (state_ == State::Paused) {
+    text_.draw(graphics, "Paused", 152, 136, Text::Alignment::Center);
+  } else {
+    garden_.draw(graphics, dx, dy);
+  }
+
+  if (state_ == State::Solved) {
+    text_.draw(graphics, "Produce", 152, 128, Text::Alignment::Center);
+    text_.draw(graphics, "Arranged", 152, 144, Text::Alignment::Center);
+  }
 
   const int s = (timer_ / 1000) % 60;
   const int m = timer_ / 60000;
@@ -48,4 +65,9 @@ void GameScreen::draw(Graphics& graphics) const {
 
   text_.draw(graphics, "Level " + std::to_string(garden_.level()), 152, 60, Text::Alignment::Center);
   text_.draw(graphics, time, graphics.width() - 4, 210, Text::Alignment::Right);
+}
+
+void GameScreen::next_level() {
+  garden_.generate(garden_.level() + 1);
+  state_ = State::Playing;
 }
