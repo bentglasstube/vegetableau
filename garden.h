@@ -63,6 +63,7 @@ class Garden {
 
     Tile at(int x, int y) const;
     bool solved() const;
+    bool animating() const { return !sliders_.empty(); }
     void update(unsigned int elapsed);
     void draw(Graphics& graphics, int x, int y) const;
 
@@ -82,9 +83,17 @@ class Garden {
       int stones;
     };
 
+    struct Point {
+      Point(int x, int y) : x(x), y(y) {}
+      int x, y;
+    };
+
     struct SlidingVeg {
-      SlidingVeg(int start, int end, Tile veg) : start(start), end(end), timer(0), veg(veg) {}
-      int start, end;
+      SlidingVeg(Point start, int end, Tile veg) : start(start), end(end), duration(kSlideTime), timer(0), veg(veg) {}
+      SlidingVeg(Point start, int end, Tile veg, int duration) : start(start), end(end), duration(duration), timer(0), veg(veg) {}
+      Point start;
+      int end;
+      int duration;
       int timer;
       Tile veg;
     };
@@ -105,4 +114,5 @@ class Garden {
     int size() const { return width_ * height_; }
     void shuffle(size_t count = 256);
     bool swap(int a, int b, bool animate);
+    Point pos(int i) const { return { (i % width_) * kSpriteSize, (i / width_) * kSpriteSize }; }
 };

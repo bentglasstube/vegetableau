@@ -12,12 +12,16 @@ GameScreen::GameScreen() :
   garden_(SEED, 1),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
-  state_(State::Playing),
+  state_(State::Setup),
   timer_(0)
 {}
 
 bool GameScreen::update(const Input& input, Audio&, unsigned int elapsed) {
-  if (state_ == State::Playing) {
+  if (state_ == State::Setup) {
+    garden_.update(elapsed);
+    if (!garden_.animating()) state_ = State::Playing;
+  } else if (state_ == State::Playing) {
+
     if (input.key_pressed(Input::Button::Left))  garden_.move(Garden::Direction::Left);
     if (input.key_pressed(Input::Button::Right)) garden_.move(Garden::Direction::Right);
     if (input.key_pressed(Input::Button::Up))    garden_.move(Garden::Direction::Up);
@@ -69,5 +73,5 @@ void GameScreen::draw(Graphics& graphics) const {
 
 void GameScreen::next_level() {
   garden_.generate(garden_.level() + 1);
-  state_ = State::Playing;
+  state_ = State::Setup;
 }

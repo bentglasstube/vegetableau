@@ -81,7 +81,16 @@ void Garden::generate(int level) {
     }
   }
 
-  shuffle(4096);
+  while (solved()) {
+    shuffle(4096);
+  }
+
+  std::uniform_real_distribution<float> ra(0, 2 * M_PI);
+  for (int i = 0; i < size(); ++i) {
+    const float a = ra(rng_);
+    Point p = { static_cast<int>(200 * std::cos(a)), static_cast<int>(200 * std::sin(a)) };
+    sliders_.emplace_back(p, i, tiles_[i], 750);
+  }
 }
 
 Garden::Tile Garden::at(int x, int y) const {
@@ -132,14 +141,14 @@ bool Garden::solved() const {
     }
   }
 
-  // Everything is solved but wait for animations to end
-  return sliders_.empty();
+  // Don't consider solved until done animating.
+  return !animating();
 }
 
 void Garden::update(unsigned int elapsed) {
   for (auto it = sliders_.begin(); it != sliders_.end(); ) {
     it->timer += elapsed;
-    if (it->timer >= kSlideTime) {
+    if (it->timer >= it->duration) {
       it = sliders_.erase(it);
     } else {
       ++it;
@@ -151,15 +160,9 @@ void Garden::draw(Graphics& graphics, int x, int y) const {
   std::set<int> skip;
 
   for (auto const& s : sliders_) {
-
-    const int x1 = (s.start % width_) * kSpriteSize;
-    const int y1 = (s.start / width_) * kSpriteSize;
-    const int x2 = (s.end % width_) * kSpriteSize;
-    const int y2 = (s.end / width_) * kSpriteSize;
-    const float a = s.timer / (float)kSlideTime;
-
-    const int sx = x1 + a * (x2 - x1);
-    const int sy = y1 + a * (y2 - y1);
+    const float a = s.timer / (float)s.duration;
+    const int sx = s.start.x + a * (pos(s.end).x - s.start.x);
+    const int sy = s.start.y + a * (pos(s.end).y - s.start.y);
 
     sprites_.draw(graphics, s.veg - 1, x + sx, y + sy);
     skip.insert(s.end);
@@ -222,14 +225,14 @@ bool Garden::swap(int a, int b, bool animate) {
   if (tiles_[a].empty() && tiles_[b].moveable()) {
     if (animate) {
       std::cerr << "Making slider from " << b << " to " << a << std::endl;
-      sliders_.emplace_back(b, a, tiles_[b]);
+      sliders_.emplace_back(pos(b), a, tiles_[b]);
     }
     std::swap(tiles_[a], tiles_[b]);
     return true;
   } else if (tiles_[a].moveable() && tiles_[b].empty()) {
     if (animate) {
       std::cerr << "Making slider from " << a << " to " << b << std::endl;
-      sliders_.emplace_back(a, b, tiles_[a]);
+      sliders_.emplace_back(pos(a), b, tiles_[a]);
     }
     std::swap(tiles_[a], tiles_[b]);
     return true;

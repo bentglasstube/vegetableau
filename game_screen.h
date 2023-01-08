@@ -20,7 +20,7 @@ class GameScreen : public Screen {
 
   private:
 
-    enum class State { Playing, Paused, Solved };
+    enum class State { Setup, Playing, Paused, Solved };
 
     Backdrop backdrop_;
     Garden garden_;
