@@ -14,6 +14,8 @@ class TitleScreen : public Screen {
 
     Screen* next_screen() const override;
 
+    std::string get_music_track() const override { return "greenthumb.ogg"; }
+
   private:
 
     Backdrop backdrop_;

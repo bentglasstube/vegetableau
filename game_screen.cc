@@ -17,29 +17,36 @@ GameScreen::GameScreen() :
   timer_(0)
 {}
 
-bool GameScreen::update(const Input& input, Audio&, unsigned int elapsed) {
+bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   if (state_ == State::Setup) {
     garden_.update(elapsed);
     if (!garden_.animating()) state_ = State::Playing;
   } else if (state_ == State::Playing) {
 
-    if (input.key_pressed(Input::Button::Left))  garden_.move(Garden::Direction::Left);
-    if (input.key_pressed(Input::Button::Right)) garden_.move(Garden::Direction::Right);
-    if (input.key_pressed(Input::Button::Up))    garden_.move(Garden::Direction::Up);
-    if (input.key_pressed(Input::Button::Down))  garden_.move(Garden::Direction::Down);
+    if (input.key_pressed(Input::Button::Left))  move(audio, Garden::Direction::Left);
+    if (input.key_pressed(Input::Button::Right)) move(audio, Garden::Direction::Right);
+    if (input.key_pressed(Input::Button::Up))    move(audio, Garden::Direction::Up);
+    if (input.key_pressed(Input::Button::Down))  move(audio, Garden::Direction::Down);
 
-    if (input.key_pressed(Input::Button::Start)) state_ = State::Paused;
+    if (input.key_pressed(Input::Button::Start)) {
+      audio.play_sample("pause.wav");
+      state_ = State::Paused;
+    }
 
     timer_ += elapsed;
     garden_.update(elapsed);
 
     if (garden_.solved()) {
+      audio.play_sample("victory.wav");
       message_ = rng_();
       state_ = State::Solved;
     }
 
   } else if (state_ == State::Paused) {
-    if (input.key_pressed(Input::Button::Start)) state_ = State::Playing;
+    if (input.key_pressed(Input::Button::Start)) {
+      audio.play_sample("resume.wav");
+      state_ = State::Playing;
+    }
   } else if (state_ == State::Solved) {
     if (input.key_pressed(Input::Button::Start)) next_level();
     if (input.key_pressed(Input::Button::A)) next_level();
@@ -81,6 +88,10 @@ void GameScreen::draw(Graphics& graphics) const {
 void GameScreen::next_level() {
   garden_.generate(rng_(), garden_.level() + 1);
   state_ = State::Setup;
+}
+
+void GameScreen::move(Audio& audio, Garden::Direction dir) {
+  if (!garden_.move(dir)) audio.play_sample("bump.wav");
 }
 
 const std::array<std::string, 8> GameScreen::kNouns = {"Produce", "Crops", "Vegetables", "Plants", "Harvest", "Goods", "Plants", "Flora"};

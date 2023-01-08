@@ -38,4 +38,5 @@ class GameScreen : public Screen {
     int message_;
 
     void next_level();
+    void move(Audio& audio, Garden::Direction dir);
 };
