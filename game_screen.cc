@@ -9,10 +9,11 @@
 
 GameScreen::GameScreen() :
   backdrop_("title.png"),
-  garden_(SEED, 1),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
+  rng_(SEED),
   state_(State::Setup),
+  garden_(rng_(), 1),
   timer_(0)
 {}
 
@@ -72,6 +73,6 @@ void GameScreen::draw(Graphics& graphics) const {
 }
 
 void GameScreen::next_level() {
-  garden_.generate(garden_.level() + 1);
+  garden_.generate(rng_(), garden_.level() + 1);
   state_ = State::Setup;
 }

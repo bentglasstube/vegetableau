@@ -59,7 +59,7 @@ class Garden {
     };
 
     Garden(unsigned int seed, int level = 1);
-    void generate(int level);
+    void generate(unsigned int seed, int level);
 
     Tile at(int x, int y) const;
     bool solved() const;

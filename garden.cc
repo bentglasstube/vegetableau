@@ -5,15 +5,11 @@
 #include <iostream>
 #include <set>
 
-Garden::Garden(unsigned int seed, int level) :
-  sprites_("veggies.png", 4, kSpriteSize, kSpriteSize),
-  rng_(seed)
-{
-  generate(level);
+Garden::Garden(unsigned int seed, int level) : sprites_("veggies.png", 4, kSpriteSize, kSpriteSize) {
+  generate(seed, level);
 }
 
-void Garden::generate(int level) {
-  const int seed = rng_();
+void Garden::generate(unsigned int seed, int level) {
   rng_.seed(seed);
 
   tiles_.fill(0);
@@ -72,7 +68,8 @@ void Garden::generate(int level) {
       ++misses;
 
       if (misses > 1024) {
-        generate(level);
+        std::cerr << "Too many failures, abandoning seed" << std::endl;
+        generate(seed + 1, level);
         return;
       }
     } else {
@@ -223,18 +220,12 @@ void Garden::shuffle(size_t count) {
 
 bool Garden::swap(int a, int b, bool animate) {
   if (tiles_[a].empty() && tiles_[b].moveable()) {
-    if (animate) {
-      std::cerr << "Making slider from " << b << " to " << a << std::endl;
-      sliders_.emplace_back(pos(b), a, tiles_[b]);
-    }
     std::swap(tiles_[a], tiles_[b]);
+    if (animate) sliders_.emplace_back(pos(b), a, tiles_[a]);
     return true;
   } else if (tiles_[a].moveable() && tiles_[b].empty()) {
-    if (animate) {
-      std::cerr << "Making slider from " << a << " to " << b << std::endl;
-      sliders_.emplace_back(pos(a), b, tiles_[a]);
-    }
     std::swap(tiles_[a], tiles_[b]);
+    if (animate) sliders_.emplace_back(pos(a), b, tiles_[b]);
     return true;
   } else {
     return false;

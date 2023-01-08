@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #include "backdrop.h"
 #include "screen.h"
 #include "sprite.h"
@@ -23,11 +25,12 @@ class GameScreen : public Screen {
     enum class State { Setup, Playing, Paused, Solved };
 
     Backdrop backdrop_;
-    Garden garden_;
     Sprite dirt_;
     Text text_;
+
+    std::mt19937 rng_;
     State state_;
-    bool solved_;
+    Garden garden_;
     int timer_;
 
     void next_level();
