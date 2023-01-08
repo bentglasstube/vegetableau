@@ -24,6 +24,9 @@ class GameScreen : public Screen {
 
     enum class State { Setup, Playing, Paused, Solved };
 
+    static const std::array<std::string, 8> kNouns;
+    static const std::array<std::string, 7> kVerbs;
+
     Backdrop backdrop_;
     Sprite dirt_;
     Text text_;
@@ -32,6 +35,7 @@ class GameScreen : public Screen {
     State state_;
     Garden garden_;
     int timer_;
+    int message_;
 
     void next_level();
 };

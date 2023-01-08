@@ -33,7 +33,10 @@ bool GameScreen::update(const Input& input, Audio&, unsigned int elapsed) {
     timer_ += elapsed;
     garden_.update(elapsed);
 
-    if (garden_.solved()) state_ = State::Solved;
+    if (garden_.solved()) {
+      message_ = rng_();
+      state_ = State::Solved;
+    }
 
   } else if (state_ == State::Paused) {
     if (input.key_pressed(Input::Button::Start)) state_ = State::Playing;
@@ -60,8 +63,11 @@ void GameScreen::draw(Graphics& graphics) const {
   }
 
   if (state_ == State::Solved) {
-    text_.draw(graphics, "Produce", 152, 128, Text::Alignment::Center);
-    text_.draw(graphics, "Arranged", 152, 144, Text::Alignment::Center);
+    const std::string noun = kNouns[message_ % kNouns.size()];
+    const std::string verb = kVerbs[message_ % kVerbs.size()];
+
+    text_.draw(graphics, noun, 152, 128, Text::Alignment::Center);
+    text_.draw(graphics, verb + "!", 152, 144, Text::Alignment::Center);
   }
 
   const int s = (timer_ / 1000) % 60;
@@ -76,3 +82,6 @@ void GameScreen::next_level() {
   garden_.generate(rng_(), garden_.level() + 1);
   state_ = State::Setup;
 }
+
+const std::array<std::string, 8> GameScreen::kNouns = {"Produce", "Crops", "Vegetables", "Plants", "Harvest", "Goods", "Plants", "Flora"};
+const std::array<std::string, 7> GameScreen::kVerbs = {"Organized", "Sorted", "Arranged", "Ordered", "Grouped", "Marshalled", "Placed"};
