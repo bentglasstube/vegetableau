@@ -7,14 +7,14 @@
 #define SEED Util::random_seed()
 #endif
 
-GameScreen::GameScreen() :
+GameScreen::GameScreen(int music) :
   backdrop_("title.png"),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
   rng_(SEED),
   state_(State::Setup),
   garden_(rng_(), 1),
-  timer_(0)
+  timer_(0), music_(music)
 {}
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
@@ -101,6 +101,19 @@ void GameScreen::next_level() {
 
 void GameScreen::move(Audio& audio, Garden::Direction dir) {
   if (!garden_.move(dir)) audio.play_sample("bump.wav");
+}
+
+std::string GameScreen::track(int i) const {
+  if (i == 0) i = 1 + Util::random_seed() % 3;
+
+  switch (i) {
+    case 1: return "gardengaiden.ogg";
+    case 2: return "fruitsoflabor.ogg";
+    case 3: return "legendofcarrot.ogg";
+    case 4: return "greenthumb.ogg";
+  }
+
+  return "";
 }
 
 const std::array<std::string, 8> GameScreen::kNouns = {"Produce", "Crops", "Vegetables", "Plants", "Harvest", "Goods", "Plants", "Flora"};

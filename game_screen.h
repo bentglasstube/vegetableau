@@ -13,12 +13,12 @@
 class GameScreen : public Screen {
   public:
 
-    GameScreen();
+    GameScreen(int music_ = 0);
 
     bool update(const Input&, Audio&, unsigned int) override;
     void draw(Graphics& graphics) const override;
 
-    std::string get_music_track() const override { return ""; }
+    std::string get_music_track() const override { return track(music_); }
     Screen* next_screen() const override { return nullptr; }
 
   private:
@@ -36,10 +36,12 @@ class GameScreen : public Screen {
     State state_;
     Garden garden_;
     int timer_;
-    int message_;
+    int music_;
 
     std::vector<MovingText> messages_;
 
     void next_level();
     void move(Audio& audio, Garden::Direction dir);
+
+    std::string track(int i) const;
 };

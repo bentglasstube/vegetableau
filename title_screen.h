@@ -2,6 +2,7 @@
 
 #include "backdrop.h"
 #include "screen.h"
+#include "sprite.h"
 #include "text.h"
 
 class TitleScreen : public Screen {
@@ -20,4 +21,18 @@ class TitleScreen : public Screen {
 
     Backdrop backdrop_;
     Text text_;
+    Sprite pointer_;
+    int cursor_, music_;
+
+    std::string music_name() const {
+      switch (music_) {
+        case 0: return "Random";
+        case 1: return "Garden Gaiden";
+        case 2: return "Fruits of Labor";
+        case 3: return "Legend of Carrot";
+        case 4: return "Green Thumb";
+        case 5: return "Silence";
+        default: return "Unknown";
+      }
+    }
 };
