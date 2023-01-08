@@ -31,6 +31,7 @@ cc_library(
         "@libgam//:sprite",
         "@libgam//:text",
         ":garden",
+        ":moving_text",
     ],
 )
 
@@ -41,5 +42,15 @@ cc_library(
     deps = [
         "@libgam//:graphics",
         "@libgam//:spritemap",
+    ],
+)
+
+cc_library(
+    name = "moving_text",
+    srcs = ["moving_text.cc"],
+    hdrs = ["moving_text.h"],
+    deps = [
+        "@libgam//:graphics",
+        "@libgam//:text",
     ],
 )

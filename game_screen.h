@@ -8,6 +8,7 @@
 #include "text.h"
 
 #include "garden.h"
+#include "moving_text.h"
 
 class GameScreen : public Screen {
   public:
@@ -36,6 +37,8 @@ class GameScreen : public Screen {
     Garden garden_;
     int timer_;
     int message_;
+
+    std::vector<MovingText> messages_;
 
     void next_level();
     void move(Audio& audio, Garden::Direction dir);

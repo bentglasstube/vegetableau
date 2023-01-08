@@ -18,6 +18,10 @@ GameScreen::GameScreen() :
 {}
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
+  for (auto& m : messages_) {
+    m.update(elapsed);
+  }
+
   if (state_ == State::Setup) {
     garden_.update(elapsed);
     if (!garden_.animating()) state_ = State::Playing;
@@ -38,7 +42,15 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
 
     if (garden_.solved()) {
       audio.play_sample("victory.wav");
-      message_ = rng_();
+
+      auto r = rng_();
+
+      const std::string noun = kNouns[r % kNouns.size()];
+      const std::string verb = kVerbs[r % kVerbs.size()];
+
+      messages_.emplace_back(text_, noun, MovingText::Point{ -104, 128 }, MovingText::Point{ 152, 128 }, 250 );
+      messages_.emplace_back(text_, verb + "!", MovingText::Point{ 408, 144 }, MovingText::Point{ 152, 144 }, 250 );
+
       state_ = State::Solved;
     }
 
@@ -69,25 +81,22 @@ void GameScreen::draw(Graphics& graphics) const {
     garden_.draw(graphics, dx, dy);
   }
 
-  if (state_ == State::Solved) {
-    const std::string noun = kNouns[message_ % kNouns.size()];
-    const std::string verb = kVerbs[message_ % kVerbs.size()];
-
-    text_.draw(graphics, noun, 152, 128, Text::Alignment::Center);
-    text_.draw(graphics, verb + "!", 152, 144, Text::Alignment::Center);
-  }
-
   const int s = (timer_ / 1000) % 60;
   const int m = timer_ / 60000;
   const std::string time = std::to_string(m) + ":" + (s < 10 ? "0" : "") + std::to_string(s);
 
   text_.draw(graphics, "Level " + std::to_string(garden_.level()), 152, 60, Text::Alignment::Center);
   text_.draw(graphics, time, graphics.width() - 4, 210, Text::Alignment::Right);
+
+  for (const auto& m : messages_) {
+    m.draw(graphics);
+  }
 }
 
 void GameScreen::next_level() {
   garden_.generate(rng_(), garden_.level() + 1);
   state_ = State::Setup;
+  messages_.clear();
 }
 
 void GameScreen::move(Audio& audio, Garden::Direction dir) {
