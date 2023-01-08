@@ -2,8 +2,8 @@
 
 Type=Application
 Version=1.0
-Name=ld52
+Name=Vegetableau
 Terminal=false
 Icon=icon
-Exec=ld52
+Exec=vegetableau
 Categories=Game;

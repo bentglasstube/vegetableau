@@ -13,7 +13,7 @@ void step(void* game) {
 int main(int, char**) {
   Game::Config config;
 
-  config.graphics.title = "ld52";
+  config.graphics.title = "Vegetableau";
   config.graphics.width = 256;
   config.graphics.height = 224;
   config.graphics.scale = 2;

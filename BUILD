@@ -1,7 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_binary(
-    name = "ld52",
+    name = "vegetableau",
     data = ["//content"],
     linkopts = [
         "-lSDL2",

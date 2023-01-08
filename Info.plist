@@ -5,11 +5,11 @@
     <key>CFBundleExecutable</key>
     <string>launcher</string>
     <key>CFBundleIdentifier</key>
-    <string>org.eatabrick.ld52</string>
+    <string>org.eatabrick.vegetableau</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>ld52</string>
+    <string>vegetableau</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
   </dict>
