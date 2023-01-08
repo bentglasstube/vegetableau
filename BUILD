@@ -20,10 +20,12 @@ cc_library(
     srcs = [
         "game_screen.cc",
         "title_screen.cc",
+        "tutorial_screen.cc",
     ],
     hdrs = [
         "game_screen.h",
         "title_screen.h",
+        "tutorial_screen.h",
     ],
     deps = [
         "@libgam//:backdrop",

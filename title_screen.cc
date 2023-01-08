@@ -1,6 +1,7 @@
 #include "title_screen.h"
 
 #include "game_screen.h"
+#include "tutorial_screen.h"
 
 TitleScreen::TitleScreen() :
   backdrop_("title.png"),
@@ -25,8 +26,11 @@ bool TitleScreen::update(const Input& input, Audio& audio, unsigned int elapsed)
       if (++music_ > 5) music_ = 0;
     }
   } else if (input.key_pressed(Input::Button::Start)) {
-    if (cursor_ == 0) return false;
-    if (cursor_ == 1) audio.play_sample("bump.wav");
+    if (cursor_ == 2) {
+      audio.play_sample("bump.wav");
+    } else {
+      return false;
+    }
   }
 
   timer_ += elapsed;
@@ -48,5 +52,6 @@ void TitleScreen::draw(Graphics& graphics) const {
 }
 
 Screen* TitleScreen::next_screen() const {
-  return new GameScreen(music_);
+  if (cursor_ == 0) return new GameScreen(music_);
+  else return new TutorialScreen();
 }

@@ -66,6 +66,7 @@ class Garden {
     bool animating() const { return !sliders_.empty(); }
     void update(unsigned int elapsed);
     void draw(Graphics& graphics, int x, int y) const;
+    void clear_animations() { sliders_.clear(); }
 
     int level() const { return level_; }
     int width() const { return width_; }
