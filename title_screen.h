@@ -21,8 +21,8 @@ class TitleScreen : public Screen {
 
     Backdrop backdrop_;
     Text text_;
-    Sprite pointer_;
-    int cursor_, music_;
+    Sprite pointer_, title_;
+    int cursor_, music_, timer_;
 
     std::string music_name() const {
       switch (music_) {

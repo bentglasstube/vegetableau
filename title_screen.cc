@@ -6,9 +6,10 @@ TitleScreen::TitleScreen() :
   backdrop_("title.png"),
   text_("text.png"),
   pointer_("pointer.png", 0, 0, 16, 16),
-  cursor_(0), music_(0) {}
+  title_("name.png", 0, 0, 224, 48),
+  cursor_(0), music_(0), timer_(0) {}
 
-bool TitleScreen::update(const Input& input, Audio& audio, unsigned int) {
+bool TitleScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
   if (input.key_pressed(Input::Button::Up)) {
     if (cursor_ > 0) --cursor_;
   }
@@ -28,20 +29,22 @@ bool TitleScreen::update(const Input& input, Audio& audio, unsigned int) {
     if (cursor_ == 1) audio.play_sample("bump.wav");
   }
 
+  timer_ += elapsed;
+
   return true;
 }
 
 void TitleScreen::draw(Graphics& graphics) const {
   backdrop_.draw(graphics);
+  title_.draw(graphics, 16, 8 + static_cast<int>(8 * std::sin(timer_ / 500.f)));
 
   const int y = graphics.height() / 2;
 
-  text_.draw(graphics, "Play", graphics.width() / 2, y, Text::Alignment::Center);
-  text_.draw(graphics, "Tutorial", graphics.width() / 2, y + 16, Text::Alignment::Center);
-  text_.draw(graphics, "Music: ", graphics.width() / 2, y + 32, Text::Alignment::Center);
-  text_.draw(graphics,  music_name(), graphics.width() / 2, y + 48, Text::Alignment::Center);
+  text_.draw(graphics, "Play", 96, y);
+  text_.draw(graphics, "Tutorial", 96, y + 16);
+  text_.draw(graphics, "$ " + music_name(), 96, y + 32);
 
-  pointer_.draw(graphics, 48, y + 16 * cursor_);
+  pointer_.draw(graphics, 64, y + 16 * cursor_);
 }
 
 Screen* TitleScreen::next_screen() const {
