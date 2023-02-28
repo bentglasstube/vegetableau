@@ -1,4 +1,6 @@
-#include "garden.h"
+// Copyright 2023 Alan Berndt
+
+#include "./garden.h"
 
 #include <algorithm>
 #include <deque>
@@ -157,7 +159,7 @@ void Garden::draw(Graphics& graphics, int x, int y) const {
   std::set<int> skip;
 
   for (auto const& s : sliders_) {
-    const float a = s.timer / (float)s.duration;
+    const float a = s.timer / static_cast<float>(s.duration);
     const int sx = s.start.x + a * (pos(s.end).x - s.start.x);
     const int sy = s.start.y + a * (pos(s.end).y - s.start.y);
 
@@ -177,8 +179,6 @@ void Garden::draw(Graphics& graphics, int x, int y) const {
       }
     }
   }
-
-
 }
 
 bool Garden::move(Direction dir, bool animate) {

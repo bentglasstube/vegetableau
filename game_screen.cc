@@ -1,9 +1,11 @@
-#include "game_screen.h"
+// Copyright 2023 Alan Berndt
+
+#include "./game_screen.h"
 
 #ifndef NDEBUG
 #define SEED 8675309
 #else
-#include "util.h"
+#include "./util.h"
 #define SEED Util::random_seed()
 #endif
 

@@ -1,4 +1,6 @@
-#include "moving_text.h"
+// Copyright 2023 Alan Berndt
+
+#include "./moving_text.h"
 
 MovingText::MovingText(const Text& text, const std::string& message) :
   text_(text),
@@ -31,7 +33,7 @@ void MovingText::move(Point from, Point to, int duration) {
 }
 
 MovingText::Point MovingText::interpolate() const {
-  float a = timer_ / (float) duration_;
+  float a = timer_ / static_cast<float>(duration_);
   const int x = from_.x + a * (to_.x - from_.x);
   const int y = from_.y + a * (to_.y - from_.y);
   return {x, y};

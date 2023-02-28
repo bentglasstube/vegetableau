@@ -1,7 +1,9 @@
-#include "title_screen.h"
+// Copyright 2023 Alan Berndt
 
-#include "game_screen.h"
-#include "tutorial_screen.h"
+#include "./title_screen.h"
+
+#include "./game_screen.h"
+#include "./tutorial_screen.h"
 
 TitleScreen::TitleScreen() :
   backdrop_("title.png"),
@@ -52,6 +54,9 @@ void TitleScreen::draw(Graphics& graphics) const {
 }
 
 Screen* TitleScreen::next_screen() const {
-  if (cursor_ == 0) return new GameScreen(music_);
-  else return new TutorialScreen();
+  if (cursor_ == 0) {
+    return new GameScreen(music_);
+  } else {
+    return new TutorialScreen();
+  }
 }

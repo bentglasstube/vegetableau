@@ -1,4 +1,6 @@
-#include "tutorial_screen.h"
+// Copyright 2023 Alan Berndt
+
+#include "./tutorial_screen.h"
 
 TutorialScreen::TutorialScreen() :
   backdrop_("tutorial.png"),

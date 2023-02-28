@@ -1,32 +1,32 @@
+// Copyright 2023 Alan Berndt
+
 #pragma once
 
+#include <string>
 #include <vector>
 
-#include "backdrop.h"
-#include "screen.h"
-#include "text.h"
+#include "./backdrop.h"
+#include "./screen.h"
+#include "./text.h"
 
-#include "garden.h"
-#include "title_screen.h"
+#include "./garden.h"
+#include "./title_screen.h"
 
 class TutorialScreen : public Screen {
-  public:
+ public:
+  TutorialScreen();
+  bool update(const Input&, Audio&, unsigned int) override;
+  void draw(Graphics&) const override;
+  Screen* next_screen() const override { return new TitleScreen(); }
+  std::string get_music_track() const override { return "greenthumb.ogg"; }
 
-    TutorialScreen();
+ private:
+  static constexpr int kMoveTime = 1000;
 
-    bool update(const Input&, Audio&, unsigned int) override;
-    void draw(Graphics&) const override;
-    Screen* next_screen() const override { return new TitleScreen(); }
-    std::string get_music_track() const override { return "greenthumb.ogg"; }
+  Backdrop backdrop_;
+  Text text_;
+  Garden garden_;
 
-  private:
-
-    static constexpr int kMoveTime = 1000;
-
-    Backdrop backdrop_;
-    Text text_;
-    Garden garden_;
-
-    int timer_, index_;
-    std::vector<Garden::Direction> moves_;
+  int timer_, index_;
+  std::vector<Garden::Direction> moves_;
 };

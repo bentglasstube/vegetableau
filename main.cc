@@ -1,9 +1,11 @@
-#include "game.h"
+// Copyright 2023 Alan Berndt
 
-#include "title_screen.h"
+#include "./game.h"
+
+#include "./title_screen.h"
 
 #ifdef __EMSCRIPTEN__
-#include "emscripten.h"
+#include "./emscripten.h"
 
 void step(void* game) {
   static_cast<Game*>(game)->step();
