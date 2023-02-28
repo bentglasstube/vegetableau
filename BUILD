@@ -19,11 +19,13 @@ cc_library(
     name = "screens",
     srcs = [
         "game_screen.cc",
+        "options_screen.cc",
         "title_screen.cc",
         "tutorial_screen.cc",
     ],
     hdrs = [
         "game_screen.h",
+        "options_screen.h",
         "title_screen.h",
         "tutorial_screen.h",
     ],
@@ -32,6 +34,7 @@ cc_library(
         "@libgam//:screen",
         "@libgam//:sprite",
         "@libgam//:text",
+        ":game_state",
         ":garden",
         ":moving_text",
     ],
@@ -55,4 +58,9 @@ cc_library(
         "@libgam//:graphics",
         "@libgam//:text",
     ],
+)
+
+cc_library(
+    name = "game_state",
+    hdrs = ["game_state.h"],
 )

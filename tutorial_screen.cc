@@ -2,7 +2,8 @@
 
 #include "./tutorial_screen.h"
 
-TutorialScreen::TutorialScreen() :
+TutorialScreen::TutorialScreen(GameState state) :
+  state_(state),
   backdrop_("tutorial.png"),
   text_("text.png"),
   garden_(42, 1),

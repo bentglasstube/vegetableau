@@ -2,6 +2,7 @@
 
 #include "./game.h"
 
+#include "./game_state.h"
 #include "./title_screen.h"
 
 #ifdef __EMSCRIPTEN__
@@ -21,8 +22,9 @@ int main(int, char**) {
   config.graphics.scale = 2;
   config.graphics.fullscreen = false;
 
+  GameState state;
   Game game(config);
-  Screen *start = new TitleScreen();
+  Screen *start = new TitleScreen(state);
 
 #ifdef __EMSCRIPTEN__
   game.start(start);

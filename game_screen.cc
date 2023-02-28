@@ -9,14 +9,16 @@
 #define SEED Util::random_seed()
 #endif
 
-GameScreen::GameScreen(int music) :
+GameScreen::GameScreen(GameState state) :
+  game_state_(state),
   backdrop_("title.png"),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
   rng_(SEED),
+  music_rng_(rng_()),
   state_(State::Setup),
   garden_(rng_(), 1),
-  timer_(0), music_(music)
+  timer_(0)
 {}
 
 bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {
@@ -67,6 +69,12 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
     if (input.key_pressed(Input::Button::B)) next_level();
   }
 
+  if (game_state_.music == Music::Random && !audio.music_playing()) {
+    std::uniform_int_distribution<int> r(1, 3);
+    Music song = r(music_rng_);
+    audio.play_music(song.track(), false);
+  }
+
   return true;
 }
 
@@ -103,19 +111,6 @@ void GameScreen::next_level() {
 
 void GameScreen::move(Audio& audio, Garden::Direction dir) {
   if (!garden_.move(dir)) audio.play_sample("bump.wav");
-}
-
-std::string GameScreen::track(int i) const {
-  if (i == 0) i = 1 + Util::random_seed() % 3;
-
-  switch (i) {
-    case 1: return "gardengaiden.ogg";
-    case 2: return "fruitsoflabor.ogg";
-    case 3: return "legendofcarrot.ogg";
-    case 4: return "greenthumb.ogg";
-  }
-
-  return "";
 }
 
 const std::array<std::string, 8> GameScreen::kNouns = {"Produce", "Crops", "Vegetables", "Plants", "Harvest", "Goods", "Plants", "Flora"};

@@ -9,20 +9,22 @@
 #include "./screen.h"
 #include "./text.h"
 
+#include "./game_state.h"
 #include "./garden.h"
 #include "./title_screen.h"
 
 class TutorialScreen : public Screen {
  public:
-  TutorialScreen();
+  explicit TutorialScreen(GameState state);
   bool update(const Input&, Audio&, unsigned int) override;
   void draw(Graphics&) const override;
-  Screen* next_screen() const override { return new TitleScreen(); }
+  Screen* next_screen() const override { return new TitleScreen(state_); }
   std::string get_music_track() const override { return "greenthumb.ogg"; }
 
  private:
   static constexpr int kMoveTime = 1000;
 
+  GameState state_;
   Backdrop backdrop_;
   Text text_;
   Garden garden_;
