@@ -4,7 +4,7 @@
 
 TutorialScreen::TutorialScreen(GameState state) :
   state_(state),
-  backdrop_("tutorial.png"),
+  backdrop_("houndstooth.png"),
   text_("text.png"),
   garden_(42, 1),
   timer_(0), index_(0),

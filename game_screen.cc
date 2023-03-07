@@ -11,7 +11,7 @@
 
 GameScreen::GameScreen(GameState state) :
   game_state_(state),
-  backdrop_("title.png"),
+  backdrop_("hills.png"),
   dirt_("dirt.png", 0, 0, 135, 135),
   text_("text.png"),
   rng_(SEED),

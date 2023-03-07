@@ -9,10 +9,10 @@
 
 TitleScreen::TitleScreen(GameState state) :
   state_(state),
-  backdrop_("title.png"),
+  backdrop_("hills.png"),
   text_("text.png"),
   pointer_("pointer.png", 0, 0, 16, 16),
-  title_("name.png", 0, 0, 224, 48),
+  title_("title.png", 0, 0, 224, 48),
   cursor_(0), timer_(0) {}
 
 bool TitleScreen::update(const Input& input, Audio& audio, unsigned int elapsed) {

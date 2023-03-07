@@ -4,7 +4,7 @@
 
 OptionsScreen::OptionsScreen(GameState state) :
   state_(state),
-  backdrop_("tutorial.png"),
+  backdrop_("houndstooth.png"),
   text_("text.png"),
   cursor_(0) {}
 
