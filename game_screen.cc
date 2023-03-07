@@ -31,10 +31,17 @@ bool GameScreen::update(const Input& input, Audio& audio, unsigned int elapsed) 
     if (!garden_.animating()) state_ = State::Playing;
   } else if (state_ == State::Playing) {
 
-    if (input.key_pressed(Input::Button::Left))  move(audio, Garden::Direction::Left);
-    if (input.key_pressed(Input::Button::Right)) move(audio, Garden::Direction::Right);
-    if (input.key_pressed(Input::Button::Up))    move(audio, Garden::Direction::Up);
-    if (input.key_pressed(Input::Button::Down))  move(audio, Garden::Direction::Down);
+    if (game_state_.controls == Controls::Normal) {
+      if (input.key_pressed(Input::Button::Left))  move(audio, Garden::Direction::Left);
+      if (input.key_pressed(Input::Button::Right)) move(audio, Garden::Direction::Right);
+      if (input.key_pressed(Input::Button::Up))    move(audio, Garden::Direction::Up);
+      if (input.key_pressed(Input::Button::Down))  move(audio, Garden::Direction::Down);
+    } else {
+      if (input.key_pressed(Input::Button::Left))  move(audio, Garden::Direction::Right);
+      if (input.key_pressed(Input::Button::Right)) move(audio, Garden::Direction::Left);
+      if (input.key_pressed(Input::Button::Up))    move(audio, Garden::Direction::Down);
+      if (input.key_pressed(Input::Button::Down))  move(audio, Garden::Direction::Up);
+    }
 
     if (input.key_pressed(Input::Button::Start)) {
       audio.play_sample("pause.wav");
